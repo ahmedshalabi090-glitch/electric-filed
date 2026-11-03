@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#f7fafb">
+<title>العلم نور - التدفق الكهربائي</title>
+<style>
+:root{color-scheme:light;--foreground:#172a33;--muted-foreground:#58717d;--border:#ccd9de;--muted:#eef4f6}
+body{margin:0;padding:20px;background:#f7fafb;color:#172a33;font-family:system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif}
+.form-range{accent-color:#168b8b}
+.form-select{font:inherit;padding:7px;border:1px solid #ccd9de;border-radius:7px;background:white;color:#172a33;width:100%}
+@media(max-width:520px){body{padding:12px}}
+</style>
+</head>
+<body><div id="flux-cube-demo" dir="rtl">
+  <style>
+    #flux-cube-demo{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--foreground);max-width:820px;margin:auto}
+    #flux-cube-demo *{box-sizing:border-box}
+    #flux-cube-demo .shell{display:grid;grid-template-columns:minmax(0,1fr) 250px;gap:18px;align-items:start}
+    #flux-cube-demo h2{font-size:20px;margin:0 0 4px;font-weight:700}
+    #flux-cube-demo .sub{font-size:13px;color:var(--muted-foreground);margin-bottom:10px}
+    #flux-cube-demo .scene{width:100%;height:auto;display:block;overflow:visible}
+    #flux-cube-demo .controls{display:grid;gap:14px;padding-top:8px}
+    #flux-cube-demo .control label{display:flex;justify-content:space-between;gap:8px;font-size:13px;margin-bottom:5px}
+    #flux-cube-demo input[type=range]{width:100%;accent-color:#168b8b}
+    #flux-cube-demo .actions{display:flex;gap:8px;align-items:center}
+    #flux-cube-demo button{border:1px solid var(--border);border-radius:8px;background:var(--muted);color:var(--foreground);padding:7px 11px;font:inherit;font-size:13px;cursor:pointer}
+    #flux-cube-demo .readout{font-size:13px;line-height:1.65;padding-top:5px}
+    #flux-cube-demo .formula{font-variant-numeric:tabular-nums;font-weight:650;color:var(--foreground)}
+    #flux-cube-demo .note{font-size:12px;color:var(--muted-foreground);margin-top:3px}
+    #flux-cube-demo .field{stroke:#e49b36;stroke-width:2;opacity:.9}
+    #flux-cube-demo .particle{fill:#f2b94b}
+    #flux-cube-demo .cube-front{fill:#4b9caa;fill-opacity:.14;stroke:#317f8d;stroke-width:2.3}
+    #flux-cube-demo .cube-top{fill:#62b5bd;fill-opacity:.17;stroke:#317f8d;stroke-width:2.3}
+    #flux-cube-demo .cube-side{fill:#317f8d;fill-opacity:.12;stroke:#317f8d;stroke-width:2.3}
+    #flux-cube-demo .vec{stroke:#b25391;stroke-width:3;marker-end:url(#fluxArrow)}
+    #flux-cube-demo .angle-arc{fill:none;stroke:#b25391;stroke-width:1.6;stroke-dasharray:4 3}
+    #flux-cube-demo .label{font-size:14px;fill:var(--foreground);font-weight:600}
+    #flux-cube-demo .small-label{font-size:12px;fill:var(--muted-foreground)}
+    @media(max-width:650px){#flux-cube-demo .shell{grid-template-columns:1fr;gap:4px}#flux-cube-demo .controls{grid-template-columns:1fr 1fr;gap:10px}#flux-cube-demo .readout,#flux-cube-demo .actions{grid-column:1/-1}}
+    @media(prefers-reduced-motion:reduce){#flux-cube-demo .particle{display:none}}
+  </style>
+  <h2>العلم نور — التدفق الكهربائي عبر مكعب</h2>
+  <div class="sub">حرّك الزوايا والمساحة وعدد الخطوط، وشاهد ما يحدث للتدفق.</div>
+  <div class="shell">
+    <svg class="scene" viewBox="0 0 560 370" role="img" aria-labelledby="fluxTitle fluxDesc">
+      <title id="fluxTitle">مكعب مغلق داخل مجال كهربائي منتظم</title>
+      <desc id="fluxDesc">خطوط مجال أفقية تمر عبر مكعب. متجه المساحة وزاويته قابلان للتغيير.</desc>
+      <defs>
+        <marker id="fluxArrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6" fill="none" stroke="#b25391" stroke-width="1.5"/></marker>
+        <marker id="fieldArrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6" fill="none" stroke="#e49b36" stroke-width="1.5"/></marker>
+      </defs>
+      <g id="fieldLines"></g>
+      <g id="particles"></g>
+      <g id="cubeShape" aria-hidden="true">
+        <path class="cube-side" d="M330 120 L420 78 L420 238 L330 280 Z"/>
+        <path class="cube-top" d="M150 120 L240 78 L420 78 L330 120 Z"/>
+        <path class="cube-front" d="M150 120 L330 120 L330 280 L150 280 Z"/>
+        <path d="M150 120 L240 78 L240 238 L150 280 M240 78 L420 78 M240 238 L420 238 L420 78 M330 280 L420 238" fill="none" stroke="#317f8d" stroke-width="2" opacity=".75"/>
+      </g>
+      <g id="vectorLayer"></g>
+      <text x="28" y="34" class="label">E = 10 N/C</text><text x="28" y="53" class="small-label">اتجاه المجال ←</text>
+      <text x="282" y="341" class="small-label" text-anchor="middle">A⃗ يخرج من مركز الوجه المختار</text>
+    </svg>
+    <div class="controls">
+      <div class="control"><label for="area">مساحة الوجه <b id="areaVal">1.0 m²</b></label><input id="area" type="range" min="0.4" max="2" step="0.1" value="1" class="form-range"></div>
+      <div class="control"><label for="lines">كثافة خطوط المجال <b id="linesVal">7</b> خط/م²</label><input id="lines" type="range" min="3" max="11" step="1" value="7" class="form-range"></div>
+      <div class="control"><label for="face">الوجه المختار</label><select id="face" class="form-select"><option value="top">الوجه العلوي</option><option value="front">الوجه الأمامي</option><option value="side">الوجه الجانبي</option></select></div>
+      <div class="control"><label for="direction">اتجاه خطوط المجال <b id="directionVal">0°</b></label><input id="direction" type="range" min="0" max="359" step="1" value="0" class="form-range"></div>
+      <div class="control"><label for="angle">الزاوية θ بين E ومتجه المساحة <b id="angleVal">90°</b></label><input id="angle" type="range" min="0" max="180" step="1" value="90" class="form-range"></div>
+      <div class="actions"><button id="play" type="button" aria-pressed="true">إيقاف الحركة</button><span class="note">النقاط الصفراء تبيّن حركة الشحنات الموجبة.</span></div>
+      <div class="readout" aria-live="polite">
+        <div>عدد خطوط المجال المارة بالوجه المختار: <span class="formula" id="crossings">0 خط</span></div>
+        <div>تدفق الوجه المختار (E = 10 N/C): <span class="formula" id="faceFlux">0.00 N·m²/C</span></div>
+        <div>التدفق الكلي عبر المكعب: <span class="formula">0</span></div>
+        <div class="note">قيمة الخطوط العابرة تقريبية وتتبع كثافتها × المساحة × |cos θ|. عند 90° لا تعبر الخطوط الوجه المختار، لكنها قد تعبر وجهاً آخر؛ التدفق الكلي للمكعب صفر لأن الشحنة المحصورة صفر.</div>
+      </div>
+    </div>
+  </div>
+  <script>
+    (()=>{
+      const root=document.getElementById('flux-cube-demo');
+      const area=root.querySelector('#area'), lines=root.querySelector('#lines'), angle=root.querySelector('#angle'), direction=root.querySelector('#direction'), face=root.querySelector('#face');
+      const lineGroup=root.querySelector('#fieldLines'), particleGroup=root.querySelector('#particles'), vectorLayer=root.querySelector('#vectorLayer');
+      const areaVal=root.querySelector('#areaVal'), linesVal=root.querySelector('#linesVal'), angleVal=root.querySelector('#angleVal'), flux=root.querySelector('#faceFlux'), crossings=root.querySelector('#crossings');
+      let running=true, start=performance.now(), raf;
+      const fmt=n=>(Math.abs(n)<.005?0:n).toFixed(2);
+      function render(){
+        const a=Number(area.value), count=Number(lines.value), deg=Number(angle.value), dir=Number(direction.value), rad=deg*Math.PI/180, dirRad=dir*Math.PI/180;
+        areaVal.textContent=a.toFixed(1)+' m²'; linesVal.textContent=count; angleVal.textContent=deg+'°'; root.querySelector('#directionVal').textContent=dir+'°';
+        flux.textContent=(Math.cos(rad)>=0?'+':'')+fmt(10*a*Math.cos(rad))+' N·m²/C';
+        const through=Math.round(count*a*Math.abs(Math.cos(rad)));
+        crossings.textContent=through+' خط'+(through===1?'':'وط')+(deg<90?' (للخارج)':deg>90?' (للداخل)':' (لا يعبر الوجه)');
+        lineGroup.replaceChildren(); particleGroup.replaceChildren(); vectorLayer.replaceChildren();
+        const dx=Math.cos(dirRad), dy=Math.sin(dirRad), nx=-Math.sin(dirRad), ny=Math.cos(dirRad);
+        const offsets=Array.from({length:count},(_,i)=>(i-(count-1)/2)*30);
+        offsets.forEach((offset,i)=>{
+          const cx=280+nx*offset, cy=180+ny*offset;
+          const l=document.createElementNS('http://www.w3.org/2000/svg','line'); l.setAttribute('x1',cx-dx*330);l.setAttribute('x2',cx+dx*330);l.setAttribute('y1',cy-dy*330);l.setAttribute('y2',cy+dy*330);l.setAttribute('class','field');l.setAttribute('marker-end','url(#fieldArrow)');lineGroup.append(l);
+          const p=document.createElementNS('http://www.w3.org/2000/svg','circle'); p.setAttribute('r','4.3');p.setAttribute('class','particle');p.dataset.index=i;p.dataset.offset=offset;particleGroup.append(p);
+        });
+        const anchors={top:[285,99,-90],front:[240,200,90],side:[375,179,0]};
+        const [baseX,baseY,baseNormal]=anchors[face.value];
+        const normal=dir-deg, rotation=normal-baseNormal;
+        const rot=rotation*Math.PI/180, cx=285,cy=179, scale=Math.sqrt(a);
+        const scaledX=cx+(baseX-cx)*scale, scaledY=cy+(baseY-cy)*scale;
+        const x0=cx+(scaledX-cx)*Math.cos(rot)-(scaledY-cy)*Math.sin(rot), y0=cy+(scaledX-cx)*Math.sin(rot)+(scaledY-cy)*Math.cos(rot)+30;
+        root.querySelector('#cubeShape').setAttribute('transform',`translate(0 30) translate(285 179) rotate(${rotation}) scale(${scale}) translate(-285 -179)`);
+        const len=82*Math.sqrt(a), vx=Math.cos(normal*Math.PI/180)*len, vy=Math.sin(normal*Math.PI/180)*len, x1=x0+vx, y1=y0+vy;
+        const v=document.createElementNS('http://www.w3.org/2000/svg','line');v.setAttribute('x1',x0);v.setAttribute('y1',y0);v.setAttribute('x2',x1);v.setAttribute('y2',y1);v.setAttribute('class','vec');vectorLayer.append(v);
+        const t=document.createElementNS('http://www.w3.org/2000/svg','text');t.setAttribute('x',x1+7);t.setAttribute('y',y1-5);t.setAttribute('class','label');t.textContent='A⃗';vectorLayer.append(t);
+        const arc=document.createElementNS('http://www.w3.org/2000/svg','path');
+        const sx=dirRad, ex=normal*Math.PI/180, sweep=0;
+        arc.setAttribute('d',`M ${x0+38*Math.cos(sx)} ${y0+38*Math.sin(sx)} A 38 38 0 0 ${sweep} ${x0+38*Math.cos(ex)} ${y0+38*Math.sin(ex)}`);arc.setAttribute('class','angle-arc');vectorLayer.append(arc);
+        const theta=document.createElementNS('http://www.w3.org/2000/svg','text');theta.setAttribute('x',x0+48*Math.cos((dirRad+ex)/2));theta.setAttribute('y',y0+48*Math.sin((dirRad+ex)/2));theta.setAttribute('class','small-label');theta.textContent='θ';vectorLayer.append(theta);
+      }
+      function animate(now){
+        const elapsed=(now-start)/1000, dir=Number(direction.value)*Math.PI/180, dx=Math.cos(dir), dy=Math.sin(dir), nx=-Math.sin(dir), ny=Math.cos(dir);
+        particleGroup.querySelectorAll('circle').forEach(p=>{const t=((elapsed*55+Number(p.dataset.index)*43)%620)-310, off=Number(p.dataset.offset);p.setAttribute('cx',280+dx*t+nx*off);p.setAttribute('cy',180+dy*t+ny*off)});
+        if(running)raf=requestAnimationFrame(animate);
+      }
+      [area,lines,angle,direction].forEach(el=>el.addEventListener('input',render));
+      face.addEventListener('change',render);
+      root.querySelector('#play').addEventListener('click',e=>{running=!running;e.currentTarget.textContent=running?'إيقاف الحركة':'تشغيل الحركة';e.currentTarget.setAttribute('aria-pressed',String(running));if(running){start=performance.now();raf=requestAnimationFrame(animate)}else cancelAnimationFrame(raf)});
+      render();raf=requestAnimationFrame(animate);
+    })();
+  </script>
+</div>
+
+</body>
+</html>
